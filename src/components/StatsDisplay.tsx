@@ -4,11 +4,15 @@ import { KanjiStats } from "../utils/textAnalysis";
 interface StatsDisplayProps {
   globalStats: KanjiStats;
   selectedStats: KanjiStats;
+  toggleKanjiHighlight: (kanji: string) => void;
+  highlightedKanji: Set<string>;
 }
 
 const StatsDisplay: React.FC<StatsDisplayProps> = ({
   globalStats,
   selectedStats,
+  toggleKanjiHighlight,
+  highlightedKanji,
 }) => {
   const sortedGlobalKanji = Object.entries(globalStats).sort(
     (a, b) => b[1] - a[1]
@@ -55,6 +59,8 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
                 selectedCount={selectedStats[kanji]}
                 maxCount={maxCount}
                 hasSelection={hasSelection}
+                toggleKanjiHighlight={toggleKanjiHighlight}
+                isHighlighted={highlightedKanji.has(kanji)}
               />
             ))}
             {selectedKanji.length > 0 && unselectedKanji.length > 0 && (
@@ -70,6 +76,8 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
             selectedCount={selectedStats[kanji] || 0}
             maxCount={maxCount}
             hasSelection={hasSelection}
+            toggleKanjiHighlight={toggleKanjiHighlight}
+            isHighlighted={highlightedKanji.has(kanji)}
           />
         ))}
       </div>
@@ -108,6 +116,8 @@ interface KanjiItemProps {
   selectedCount: number;
   maxCount: number;
   hasSelection: boolean;
+  toggleKanjiHighlight: (kanji: string) => void;
+  isHighlighted: boolean;
 }
 
 const KanjiItem: React.FC<KanjiItemProps> = ({
@@ -116,13 +126,24 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
   selectedCount,
   maxCount,
   hasSelection,
+  toggleKanjiHighlight,
+  isHighlighted,
 }) => {
   const percentage = (globalCount / maxCount) * 100;
   const isSelected = hasSelection && selectedCount > 0;
 
   return (
-    <div className={`flex items-center space-x-2 p-1 rounded ${isSelected ? 'bg-blue-50' : ''}`}>
-      <span className={`text-2xl w-8 ${isSelected ? 'text-blue-600' : ''}`}>{kanji}</span>
+    <div 
+      className={`flex items-center space-x-2 p-1 rounded cursor-pointer ${
+        isSelected ? 'bg-blue-50' : ''
+      } ${isHighlighted ? 'ring-2 ring-blue-500' : ''}`}
+      onClick={() => toggleKanjiHighlight(kanji)}
+    >
+      <span className={`text-2xl w-8 ${isSelected ? 'text-blue-600' : ''} ${
+        isHighlighted ? 'font-bold' : ''
+      }`}>
+        {kanji}
+      </span>
       <div className="flex-grow bg-gray-100 rounded-full h-2">
         <div
           className={`rounded-full h-2 ${hasSelection ? (isSelected ? 'bg-blue-500' : 'bg-gray-300') : 'bg-blue-500'}`}
