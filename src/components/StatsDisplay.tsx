@@ -6,12 +6,24 @@ interface StatsDisplayProps {
   selectedStats: KanjiStats;
 }
 
-const StatsDisplay: React.FC<StatsDisplayProps> = ({ globalStats, selectedStats }) => {
-  const sortedGlobalKanji = Object.entries(globalStats).sort((a, b) => b[1] - a[1]);
+const StatsDisplay: React.FC<StatsDisplayProps> = ({
+  globalStats,
+  selectedStats,
+}) => {
+  console.log(globalStats);
+  const sortedGlobalKanji = Object.entries(globalStats).sort(
+    (a, b) => b[1] - a[1]
+  );
   const maxCount = sortedGlobalKanji[0]?.[1] || 0;
-  const globalTotalCount = sortedGlobalKanji.reduce((sum, [_, count]) => sum + count, 0);
+  const globalTotalCount = sortedGlobalKanji.reduce(
+    (sum, [_, count]) => sum + count,
+    0
+  );
   const globalUniqueKanjiCount = sortedGlobalKanji.length;
-  const selectedTotalCount = Object.values(selectedStats).reduce((sum, count) => sum + count, 0);
+  const selectedTotalCount = Object.values(selectedStats).reduce(
+    (sum, count) => sum + count,
+    0
+  );
   const selectedUniqueKanjiCount = Object.keys(selectedStats).length;
   const hasSelection = selectedTotalCount > 0;
 
@@ -33,12 +45,12 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({ globalStats, selectedStats 
       </div>
       <div className="space-y-2">
         {sortedGlobalKanji.map(([kanji, globalCount]) => (
-          <KanjiItem 
-            key={kanji} 
-            kanji={kanji} 
-            globalCount={globalCount} 
-            selectedCount={selectedStats[kanji] || 0} 
-            maxCount={maxCount} 
+          <KanjiItem
+            key={kanji}
+            kanji={kanji}
+            globalCount={globalCount}
+            selectedCount={selectedStats[kanji] || 0}
+            maxCount={maxCount}
             hasSelection={hasSelection}
           />
         ))}
@@ -54,7 +66,12 @@ interface StatCardProps {
   selectedValue?: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ icon, title, value, selectedValue }) => {
+const StatCard: React.FC<StatCardProps> = ({
+  icon,
+  title,
+  value,
+  selectedValue,
+}) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center justify-center">
       <div className="text-2xl mb-2">{icon}</div>
@@ -80,9 +97,15 @@ interface KanjiItemProps {
   hasSelection: boolean;
 }
 
-const KanjiItem: React.FC<KanjiItemProps> = ({ kanji, globalCount, selectedCount, maxCount, hasSelection }) => {
+const KanjiItem: React.FC<KanjiItemProps> = ({
+  kanji,
+  globalCount,
+  selectedCount,
+  maxCount,
+  hasSelection,
+}) => {
   const percentage = (globalCount / maxCount) * 100;
-  
+
   return (
     <div className="flex items-center space-x-2">
       <span className="text-2xl w-8">{kanji}</span>
@@ -93,7 +116,9 @@ const KanjiItem: React.FC<KanjiItemProps> = ({ kanji, globalCount, selectedCount
         ></div>
       </div>
       <span className="text-sm font-semibold">
-        {hasSelection && selectedCount > 0 ? `${selectedCount} / ${globalCount}` : globalCount}
+        {hasSelection && selectedCount > 0
+          ? `${selectedCount} / ${globalCount}`
+          : globalCount}
       </span>
     </div>
   );
