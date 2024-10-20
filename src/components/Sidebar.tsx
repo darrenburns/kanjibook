@@ -51,17 +51,17 @@ const Sidebar: React.FC<SidebarProps> = ({ content, selectedText }) => {
 
   return (
     <aside 
-      className="bg-white shadow-lg flex flex-col relative" 
+      className="bg-gray-100 shadow-lg flex flex-col relative" 
       style={{ width: `${width}px` }}
     >
       <div
         className="w-1 bg-gray-300 hover:bg-gray-400 cursor-col-resize absolute left-0 top-0 bottom-0"
         onMouseDown={handleMouseDown}
       />
-      <div className="p-4 flex-grow overflow-auto">
-        <h2 className="text-2xl font-semibold mb-4">Kanji Stats</h2>
+      <div className="p-6 flex-grow overflow-auto">
+        <h2 className="text-2xl font-semibold mb-6">Kanji Stats</h2>
         {selectedText && (
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="text-sm text-gray-600 mb-4">
             Showing stats for selected text
           </p>
         )}

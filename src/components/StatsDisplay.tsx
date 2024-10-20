@@ -17,13 +17,19 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({ globalStats, selectedStats 
 
   return (
     <div>
-      <div className="mb-4 space-y-1">
-        <p className="text-sm font-semibold">
-          Total Kanji: {hasSelection ? `${selectedTotalCount} / ` : ''}{globalTotalCount}
-        </p>
-        <p className="text-sm font-semibold">
-          Unique Kanji: {hasSelection ? `${selectedUniqueKanjiCount} / ` : ''}{globalUniqueKanjiCount}
-        </p>
+      <div className="mb-6 grid grid-cols-2 gap-4">
+        <StatCard
+          icon="📊"
+          title="Total Kanji"
+          value={globalTotalCount}
+          selectedValue={hasSelection ? selectedTotalCount : undefined}
+        />
+        <StatCard
+          icon="🔤"
+          title="Unique Kanji"
+          value={globalUniqueKanjiCount}
+          selectedValue={hasSelection ? selectedUniqueKanjiCount : undefined}
+        />
       </div>
       <div className="space-y-2">
         {sortedGlobalKanji.map(([kanji, globalCount]) => (
@@ -37,6 +43,31 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({ globalStats, selectedStats 
           />
         ))}
       </div>
+    </div>
+  );
+};
+
+interface StatCardProps {
+  icon: string;
+  title: string;
+  value: number;
+  selectedValue?: number;
+}
+
+const StatCard: React.FC<StatCardProps> = ({ icon, title, value, selectedValue }) => {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center justify-center">
+      <div className="text-2xl mb-2">{icon}</div>
+      <h3 className="text-sm font-semibold text-gray-600 mb-1">{title}</h3>
+      <p className="text-lg font-bold">
+        {selectedValue !== undefined ? (
+          <>
+            <span className="text-blue-600">{selectedValue}</span>
+            <span className="text-gray-400 mx-1">/</span>
+          </>
+        ) : null}
+        <span>{value}</span>
+      </p>
     </div>
   );
 };
