@@ -10,7 +10,6 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   globalStats,
   selectedStats,
 }) => {
-  console.log(globalStats);
   const sortedGlobalKanji = Object.entries(globalStats).sort(
     (a, b) => b[1] - a[1]
   );
@@ -31,13 +30,11 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
     <div>
       <div className="mb-6 grid grid-cols-2 gap-4">
         <StatCard
-          icon="📊"
           title="Total Kanji"
           value={globalTotalCount}
           selectedValue={hasSelection ? selectedTotalCount : undefined}
         />
         <StatCard
-          icon="🔤"
           title="Unique Kanji"
           value={globalUniqueKanjiCount}
           selectedValue={hasSelection ? selectedUniqueKanjiCount : undefined}
@@ -60,30 +57,25 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
 };
 
 interface StatCardProps {
-  icon: string;
   title: string;
   value: number;
   selectedValue?: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({
-  icon,
-  title,
-  value,
-  selectedValue,
-}) => {
+const StatCard: React.FC<StatCardProps> = ({ title, value, selectedValue }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center justify-center">
-      <div className="text-2xl mb-2">{icon}</div>
-      <h3 className="text-sm font-semibold text-gray-600 mb-1">{title}</h3>
-      <p className="text-lg font-bold">
+    <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
+      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+        {title}
+      </h3>
+      <p className="text-2xl font-semibold">
         {selectedValue !== undefined ? (
           <>
             <span className="text-blue-600">{selectedValue}</span>
-            <span className="text-gray-400 mx-1">/</span>
+            <span className="text-gray-300 mx-1">/</span>
           </>
         ) : null}
-        <span>{value}</span>
+        <span className="text-gray-800">{value}</span>
       </p>
     </div>
   );
@@ -109,13 +101,13 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
   return (
     <div className="flex items-center space-x-2">
       <span className="text-2xl w-8">{kanji}</span>
-      <div className="flex-grow bg-gray-200 rounded-full h-4">
+      <div className="flex-grow bg-gray-100 rounded-full h-2">
         <div
-          className="bg-blue-600 rounded-full h-4"
+          className="bg-blue-500 rounded-full h-2"
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
-      <span className="text-sm font-semibold">
+      <span className="text-sm font-medium text-gray-600">
         {hasSelection && selectedCount > 0
           ? `${selectedCount} / ${globalCount}`
           : globalCount}
