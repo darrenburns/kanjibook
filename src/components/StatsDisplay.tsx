@@ -26,6 +26,10 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   const selectedUniqueKanjiCount = Object.keys(selectedStats).length;
   const hasSelection = selectedTotalCount > 0;
 
+  // Separate selected and unselected kanji
+  const selectedKanji = sortedGlobalKanji.filter(([kanji]) => selectedStats[kanji]);
+  const unselectedKanji = sortedGlobalKanji.filter(([kanji]) => !selectedStats[kanji]);
+
   return (
     <div>
       <div className="mb-6 grid grid-cols-2 gap-4">
@@ -41,7 +45,24 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
         />
       </div>
       <div className="space-y-2">
-        {sortedGlobalKanji.map(([kanji, globalCount]) => (
+        {hasSelection && (
+          <>
+            {selectedKanji.map(([kanji, globalCount]) => (
+              <KanjiItem
+                key={kanji}
+                kanji={kanji}
+                globalCount={globalCount}
+                selectedCount={selectedStats[kanji]}
+                maxCount={maxCount}
+                hasSelection={hasSelection}
+              />
+            ))}
+            {selectedKanji.length > 0 && unselectedKanji.length > 0 && (
+              <div className="border-t border-gray-200 my-4"></div>
+            )}
+          </>
+        )}
+        {unselectedKanji.map(([kanji, globalCount]) => (
           <KanjiItem
             key={kanji}
             kanji={kanji}
@@ -97,20 +118,19 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
   hasSelection,
 }) => {
   const percentage = (globalCount / maxCount) * 100;
+  const isSelected = hasSelection && selectedCount > 0;
 
   return (
-    <div className="flex items-center space-x-2">
-      <span className="text-2xl w-8">{kanji}</span>
+    <div className={`flex items-center space-x-2 p-1 rounded ${isSelected ? 'bg-blue-50' : ''}`}>
+      <span className={`text-2xl w-8 ${isSelected ? 'text-blue-600' : ''}`}>{kanji}</span>
       <div className="flex-grow bg-gray-100 rounded-full h-2">
         <div
-          className="bg-blue-500 rounded-full h-2"
+          className={`rounded-full h-2 ${hasSelection ? (isSelected ? 'bg-blue-500' : 'bg-gray-300') : 'bg-blue-500'}`}
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
-      <span className="text-sm font-medium text-gray-600">
-        {hasSelection && selectedCount > 0
-          ? `${selectedCount} / ${globalCount}`
-          : globalCount}
+      <span className={`text-sm font-medium ${isSelected ? 'text-blue-600' : 'text-gray-600'}`}>
+        {isSelected ? `${selectedCount} / ${globalCount}` : globalCount}
       </span>
     </div>
   );
