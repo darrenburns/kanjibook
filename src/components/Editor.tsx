@@ -15,7 +15,7 @@ const Editor: React.FC<EditorProps> = ({ content, setContent, setSelectedText, f
 
   return (
     <textarea
-      className="w-full h-full p-4 border-t border-x rounded-t-md resize-none focus:outline-none"
+      className="w-full h-full resize-none p-4 focus:outline-none border-r"
       style={{ fontSize: `${fontSize}px` }}
       value={content}
       onChange={(e) => setContent(e.target.value)}
