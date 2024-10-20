@@ -8,7 +8,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ content, selectedText }) => {
-  const stats = calculateKanjiStats(selectedText || content);
+  const globalStats = calculateKanjiStats(content);
+  const selectedStats = calculateKanjiStats(selectedText);
   const [width, setWidth] = useState(384); // 384px is equivalent to w-96
   const [isDragging, setIsDragging] = useState(false);
 
@@ -64,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ content, selectedText }) => {
             Showing stats for selected text
           </p>
         )}
-        <StatsDisplay stats={stats} />
+        <StatsDisplay globalStats={globalStats} selectedStats={selectedStats} />
       </div>
     </aside>
   );
