@@ -12,18 +12,22 @@ const Sidebar: React.FC<SidebarProps> = ({ content, selectedText }) => {
   const [width, setWidth] = useState(384); // 384px is equivalent to w-96
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleMouseDown = useCallback(() => {
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     setIsDragging(true);
+    document.body.classList.add('resize-cursor', 'select-none');
   }, []);
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
+    document.body.classList.remove('resize-cursor', 'select-none');
   }, []);
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (isDragging) {
-        const newWidth = e.clientX;
+        e.preventDefault();
+        const newWidth = window.innerWidth - e.clientX;
         setWidth(Math.max(250, Math.min(newWidth, 600))); // Min 250px, Max 600px
       }
     },
@@ -31,19 +35,28 @@ const Sidebar: React.FC<SidebarProps> = ({ content, selectedText }) => {
   );
 
   useEffect(() => {
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   return (
     <aside 
-      className="bg-white shadow-lg flex flex-col" 
+      className="bg-white shadow-lg flex flex-col relative" 
       style={{ width: `${width}px` }}
     >
+      <div
+        className="w-1 bg-gray-300 hover:bg-gray-400 cursor-col-resize absolute left-0 top-0 bottom-0"
+        onMouseDown={handleMouseDown}
+      />
       <div className="p-4 flex-grow overflow-auto">
         <h2 className="text-2xl font-semibold mb-4">Kanji Stats</h2>
         {selectedText && (
@@ -53,11 +66,6 @@ const Sidebar: React.FC<SidebarProps> = ({ content, selectedText }) => {
         )}
         <StatsDisplay stats={stats} />
       </div>
-      <div
-        className="w-1 bg-gray-300 hover:bg-gray-400 cursor-col-resize"
-        onMouseDown={handleMouseDown}
-        style={{ height: '100%', position: 'absolute', left: 0, top: 0 }}
-      />
     </aside>
   );
 };
