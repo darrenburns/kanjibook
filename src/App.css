@@ -48,3 +48,9 @@ h1, h2, h3, h4, h5, h6 {
 .ProseMirror p {
   margin: 0;
 }
+
+/* Add this to your existing styles */
+.ProseMirror mark {
+  background-color: #fce7f3; /* This should match the color used in the setHighlight command */
+  color: inherit;
+}

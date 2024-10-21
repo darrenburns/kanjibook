@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Extension } from '@tiptap/core';
+import Highlight from '@tiptap/extension-highlight';
 
 interface EditorProps {
   content: string;
@@ -10,32 +10,6 @@ interface EditorProps {
   fontSize: number;
   highlightedKanji: Set<string>;
 }
-
-const HighlightKanji = Extension.create({
-  name: 'highlightKanji',
-  addGlobalAttributes() {
-    return [
-      {
-        types: ['textStyle'],
-        attributes: {
-          highlightedKanji: {
-            default: null,
-            parseHTML: element => element.getAttribute('data-highlighted-kanji'),
-            renderHTML: attributes => {
-              if (!attributes.highlightedKanji) {
-                return {};
-              }
-              return {
-                'data-highlighted-kanji': attributes.highlightedKanji,
-                class: 'highlighted-kanji',
-              };
-            },
-          },
-        },
-      },
-    ];
-  },
-});
 
 const Editor: React.FC<EditorProps> = ({
   content,
@@ -53,7 +27,12 @@ const Editor: React.FC<EditorProps> = ({
   }, [setSelectedText]);
 
   const editor = useEditor({
-    extensions: [StarterKit, HighlightKanji],
+    extensions: [
+      StarterKit,
+      Highlight.configure({
+        multicolor: true,
+      }),
+    ],
     content: editorContent,
     onUpdate: ({ editor }) => {
       const newContent = editor.getText();
@@ -64,17 +43,31 @@ const Editor: React.FC<EditorProps> = ({
   });
 
   useEffect(() => {
-    if (editor && editorContent !== content) {
+    if (editor) {
+      editor.commands.setContent(content);
+      
+      // Remove all existing highlights
+      editor.commands.unsetHighlight();
+
+      // Apply new highlights
       const kanjiRegex = /[\u4e00-\u9faf]/g;
-      const highlightedContent = content.replace(kanjiRegex, (kanji) => {
+      let match;
+      while ((match = kanjiRegex.exec(content)) !== null) {
+        const kanji = match[0];
         if (highlightedKanji.has(kanji)) {
-          return `<span data-highlighted-kanji="true">${kanji}</span>`;
+          const start = match.index + 1;
+          const end = start + 1;
+          editor.chain().focus().setTextSelection({ from: start, to: end })
+            .setHighlight({ color: '#fce7f3' })
+            .run();
         }
-        return kanji;
-      });
-      editor.commands.setContent(highlightedContent);
+      }
+      
+      // Reset selection and focus
+      editor.commands.setTextSelection(0);
+      editor.commands.blur();
     }
-  }, [content, highlightedKanji, editor, editorContent]);
+  }, [content, highlightedKanji, editor]);
 
   return (
     <div className="editor-container w-full h-full overflow-auto">
