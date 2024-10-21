@@ -81,9 +81,6 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
                 isHighlighted={highlightedKanji.has(kanji)}
               />
             ))}
-            {selectedKanji.length > 0 && unselectedKanji.length > 0 && (
-              <div className="border-t border-gray-200 my-4"></div>
-            )}
           </>
         )}
         {unselectedKanji.length > 0 && (
@@ -198,14 +195,14 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
   const levels = ['N5', 'N4', 'N3', 'N2', 'N1', 'Unknown'];
   const maxCount = Math.max(...levels.map(level => globalKanjiByLevel[level].length));
 
-  // Perceptually uniform color scale from green to red
+  // Updated color scale with N5 more towards green and N3 towards yellow
   const colorScale = [
-    '#1a9850', // N5 (easiest) - Green
-    '#91cf60',
-    '#d9ef8b',
-    '#fee08b',
-    '#fc8d59',
-    '#d73027'  // N1 (hardest) - Red
+    '#2ca02c', // N5 (easiest) - Green
+    '#82c341', // N4 - Yellow-Green
+    '#e7ba52', // N3 - Yellow (still visible on white)
+    '#fd8d3c', // N2 - Light Orange
+    '#d73027', // N1 - Dark Red
+    '#999999'  // Unknown - Grey
   ];
 
   return (
@@ -214,11 +211,11 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
         const globalCount = globalKanjiByLevel[level].length;
         const selectedCount = selectedKanjiByLevel ? selectedKanjiByLevel[level].length : undefined;
         const percentage = (globalCount / maxCount) * 100;
-        const barColor = level === 'Unknown' ? '#808080' : colorScale[index];
+        const barColor = colorScale[index];
 
         return (
           <div key={level} className="flex items-center space-x-2">
-            <span className="text-sm font-medium w-16">{level}</span>
+            <span className="text-sm font-medium w-16">{level === 'Unknown' ? 'Other' : level}</span>
             <div className="flex-grow bg-gray-100 rounded-full h-4 overflow-hidden">
               <div
                 className="h-full"
