@@ -64,6 +64,20 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
           </button>
         )}
       </div>
+
+      {/* Add the stat cards here */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <StatCard
+          title="Total Kanji"
+          value={globalTotalCount}
+          selectedValue={hasSelection ? selectedTotalCount : undefined}
+        />
+        <StatCard
+          title="Unique Kanji"
+          value={globalUniqueKanjiCount}
+          selectedValue={hasSelection ? selectedUniqueKanjiCount : undefined}
+        />
+      </div>
       
       {/* JLPT Level Breakdown */}
       <div className="mb-6">
