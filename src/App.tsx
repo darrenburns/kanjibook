@@ -22,6 +22,10 @@ const App: React.FC = () => {
     });
   }, []);
 
+  const clearHighlightedKanji = useCallback(() => {
+    setHighlightedKanji(new Set());
+  }, []);
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       <div className="flex-grow flex flex-col overflow-hidden">
@@ -40,6 +44,7 @@ const App: React.FC = () => {
           selectedText={selectedText} 
           toggleKanjiHighlight={toggleKanji}
           highlightedKanji={highlightedKanji}
+          clearHighlightedKanji={clearHighlightedKanji}
         />
       </div>
     </div>

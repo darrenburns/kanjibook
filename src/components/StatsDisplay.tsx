@@ -15,6 +15,7 @@ interface StatsDisplayProps {
   selectedStats: KanjiStats;
   toggleKanjiHighlight: (kanji: string) => void;
   highlightedKanji: Set<string>;
+  clearHighlightedKanji: () => void;
 }
 
 const StatsDisplay: React.FC<StatsDisplayProps> = ({
@@ -22,6 +23,7 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   selectedStats,
   toggleKanjiHighlight,
   highlightedKanji,
+  clearHighlightedKanji,
 }) => {
   const sortedGlobalKanji = Object.entries(globalStats).sort(
     (a, b) => b[1].count - a[1].count
@@ -51,17 +53,16 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
 
   return (
     <div>
-      <div className="mb-6 grid grid-cols-2 gap-4">
-        <StatCard
-          title="Total Kanji"
-          value={globalTotalCount}
-          selectedValue={hasSelection ? selectedTotalCount : undefined}
-        />
-        <StatCard
-          title="Unique Kanji"
-          value={globalUniqueKanjiCount}
-          selectedValue={hasSelection ? selectedUniqueKanjiCount : undefined}
-        />
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-800">Kanji Stats</h2>
+        {highlightedKanji.size > 0 && (
+          <button
+            onClick={clearHighlightedKanji}
+            className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
+          >
+            Clear Highlights
+          </button>
+        )}
       </div>
       
       {/* JLPT Level Breakdown */}
