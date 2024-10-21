@@ -15,16 +15,16 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   highlightedKanji,
 }) => {
   const sortedGlobalKanji = Object.entries(globalStats).sort(
-    (a, b) => b[1] - a[1]
+    (a, b) => b[1].count - a[1].count
   );
-  const maxCount = sortedGlobalKanji[0]?.[1] || 0;
+  const maxCount = sortedGlobalKanji[0]?.[1].count || 0;
   const globalTotalCount = sortedGlobalKanji.reduce(
-    (sum, [_, count]) => sum + count,
+    (sum, [_, count]) => sum + count.count,
     0
   );
   const globalUniqueKanjiCount = sortedGlobalKanji.length;
   const selectedTotalCount = Object.values(selectedStats).reduce(
-    (sum, count) => sum + count,
+    (sum, count) => sum + count.count,
     0
   );
   const selectedUniqueKanjiCount = Object.keys(selectedStats).length;
@@ -55,8 +55,8 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
               <KanjiItem
                 key={kanji}
                 kanji={kanji}
-                globalCount={globalCount}
-                selectedCount={selectedStats[kanji]}
+                globalCount={globalCount.count}
+                selectedCount={selectedStats[kanji]?.count || 0}
                 maxCount={maxCount}
                 hasSelection={hasSelection}
                 toggleKanjiHighlight={toggleKanjiHighlight}
@@ -72,8 +72,8 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
           <KanjiItem
             key={kanji}
             kanji={kanji}
-            globalCount={globalCount}
-            selectedCount={selectedStats[kanji] || 0}
+            globalCount={globalCount.count}
+            selectedCount={selectedStats[kanji]?.count || 0}
             maxCount={maxCount}
             hasSelection={hasSelection}
             toggleKanjiHighlight={toggleKanjiHighlight}

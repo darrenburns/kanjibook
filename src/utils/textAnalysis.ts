@@ -1,3 +1,5 @@
+import { KANJI, KanjiData } from './jouyouKanji';
+
 export interface TextStats {
   wordCount: number;
   readability: number;
@@ -21,7 +23,11 @@ export function calculateStats(text: string): TextStats {
 }
 
 export interface KanjiStats {
-  [kanji: string]: number;
+  [kanji: string]: {
+    count: number;
+    jlptLevel: number | null;
+    grade: number | null;
+  };
 }
 
 export function calculateKanjiStats(text: string): KanjiStats {
@@ -30,8 +36,49 @@ export function calculateKanjiStats(text: string): KanjiStats {
   
   const stats: KanjiStats = {};
   for (const kanji of kanjiMatches) {
-    stats[kanji] = (stats[kanji] || 0) + 1;
+    if (!stats[kanji]) {
+      const kanjiData: KanjiData | undefined = KANJI[kanji];
+      stats[kanji] = {
+        count: 0,
+        jlptLevel: kanjiData ? kanjiData.jlpt_new : null,
+        grade: kanjiData ? kanjiData.grade : null,
+      };
+    }
+    stats[kanji].count += 1;
   }
   
   return stats;
+}
+
+export function getKanjiByLevel(stats: KanjiStats): { [level: string]: string[] } {
+  const kanjiByLevel: { [level: string]: string[] } = {
+    'N5': [], 'N4': [], 'N3': [], 'N2': [], 'N1': [], 'Unknown': []
+  };
+
+  for (const [kanji, info] of Object.entries(stats)) {
+    const level = info.jlptLevel ? `N${info.jlptLevel}` : 'Unknown';
+    kanjiByLevel[level].push(kanji);
+  }
+
+  return kanjiByLevel;
+}
+
+export function getKanjiByGrade(stats: KanjiStats): { [grade: string]: string[] } {
+  const kanjiByGrade: { [grade: string]: string[] } = {
+    '1': [], '2': [], '3': [], '4': [], '5': [], '6': [], 'Secondary': [], 'Unknown': []
+  };
+
+  for (const [kanji, info] of Object.entries(stats)) {
+    let grade: string;
+    if (info.grade === null) {
+      grade = 'Unknown';
+    } else if (info.grade > 6) {
+      grade = 'Secondary';
+    } else {
+      grade = info.grade.toString();
+    }
+    kanjiByGrade[grade].push(kanji);
+  }
+
+  return kanjiByGrade;
 }
