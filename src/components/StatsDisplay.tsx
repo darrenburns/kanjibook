@@ -55,18 +55,14 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
       {/* JLPT Level Breakdown */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">JLPT Level Breakdown</h3>
-        <div className="grid grid-cols-3 gap-2">
-          {['N5', 'N4', 'N3', 'N2', 'N1', 'Unknown'].map((level) => (
-            <JLPTLevelCard
-              key={level}
-              level={level}
-              globalCount={globalKanjiByLevel[level].length}
-              selectedCount={hasSelection ? selectedKanjiByLevel[level].length : undefined}
-            />
-          ))}
-        </div>
+        <JLPTLevelBreakdown
+          globalKanjiByLevel={globalKanjiByLevel}
+          selectedKanjiByLevel={hasSelection ? selectedKanjiByLevel : undefined}
+        />
       </div>
 
+      {/* Kanji counts */}
+      <h3 className="text-lg font-semibold mb-2">Kanji Counts</h3>
       <div className="space-y-2">
         {hasSelection && (
           <>
@@ -176,25 +172,37 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
   );
 };
 
-interface JLPTLevelCardProps {
-  level: string;
-  globalCount: number;
-  selectedCount?: number;
+interface JLPTLevelBreakdownProps {
+  globalKanjiByLevel: { [level: string]: string[] };
+  selectedKanjiByLevel?: { [level: string]: string[] };
 }
 
-const JLPTLevelCard: React.FC<JLPTLevelCardProps> = ({ level, globalCount, selectedCount }) => {
+const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLevel, selectedKanjiByLevel }) => {
+  const levels = ['N5', 'N4', 'N3', 'N2', 'N1', 'Unknown'];
+  const maxCount = Math.max(...levels.map(level => globalKanjiByLevel[level].length));
+
   return (
-    <div className="bg-white rounded-lg shadow-sm p-2 border border-gray-100 text-center">
-      <h4 className="text-sm font-medium text-gray-700 mb-1">{level}</h4>
-      <p className="text-lg font-semibold">
-        {selectedCount !== undefined ? (
-          <>
-            <span className="text-blue-600">{selectedCount}</span>
-            <span className="text-gray-300 mx-1">/</span>
-          </>
-        ) : null}
-        <span className="text-gray-800">{globalCount}</span>
-      </p>
+    <div className="space-y-2">
+      {levels.map((level) => {
+        const globalCount = globalKanjiByLevel[level].length;
+        const selectedCount = selectedKanjiByLevel ? selectedKanjiByLevel[level].length : undefined;
+        const percentage = (globalCount / maxCount) * 100;
+
+        return (
+          <div key={level} className="flex items-center space-x-2">
+            <span className="text-sm font-medium w-16">{level}</span>
+            <div className="flex-grow bg-gray-100 rounded-full h-4 overflow-hidden">
+              <div
+                className={`h-full ${selectedCount !== undefined ? 'bg-blue-500' : 'bg-gray-400'}`}
+                style={{ width: `${percentage}%` }}
+              ></div>
+            </div>
+            <span className="text-sm font-medium w-16 text-right">
+              {selectedCount !== undefined ? `${selectedCount} / ${globalCount}` : globalCount}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 };
