@@ -1,6 +1,15 @@
 import React from "react";
 import { KanjiStats, getKanjiByLevel } from "../utils/textAnalysis";
 
+const jlptColorScale = {
+  5: '#2ca02c', // N5 (easiest) - Green
+  4: '#82c341', // N4 - Yellow-Green
+  3: '#e7ba52', // N3 - Yellow
+  2: '#fd8d3c', // N2 - Light Orange
+  1: '#d73027', // N1 - Dark Red
+  0: '#999999'  // Unknown - Grey
+};
+
 interface StatsDisplayProps {
   globalStats: KanjiStats;
   selectedStats: KanjiStats;
@@ -82,6 +91,7 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
                 hasSelection={hasSelection}
                 toggleKanjiHighlight={toggleKanjiHighlight}
                 isHighlighted={highlightedKanji.has(kanji)}
+                jlptLevel={globalStats[kanji].jlptLevel}
               />
             ))}
           </>
@@ -101,6 +111,7 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
                 hasSelection={hasSelection}
                 toggleKanjiHighlight={toggleKanjiHighlight}
                 isHighlighted={highlightedKanji.has(kanji)}
+                jlptLevel={globalCount.jlptLevel}
               />
             ))}
           </>
@@ -145,6 +156,7 @@ interface KanjiItemProps {
   hasSelection: boolean;
   toggleKanjiHighlight: (kanji: string) => void;
   isHighlighted: boolean;
+  jlptLevel: number | null;
 }
 
 const KanjiItem: React.FC<KanjiItemProps> = ({
@@ -155,9 +167,11 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
   hasSelection,
   toggleKanjiHighlight,
   isHighlighted,
+  jlptLevel,
 }) => {
   const percentage = (globalCount / maxCount) * 100;
   const isSelected = hasSelection && selectedCount > 0;
+  const jlptColor = jlptColorScale[jlptLevel || 0];
 
   return (
     <div 
@@ -166,10 +180,15 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
       } ${isHighlighted ? 'ring-2 ring-blue-500' : ''}`}
       onClick={() => toggleKanjiHighlight(kanji)}
     >
-      <span className={`text-2xl w-8 ${isSelected ? 'text-blue-600' : ''} ${
-        isHighlighted ? 'font-bold' : ''
-      }`}>
+      <span 
+        className={`text-2xl w-8 ${isSelected ? 'text-blue-600' : ''} ${
+          isHighlighted ? 'font-bold' : ''
+        }`}
+      >
         {kanji}
+      </span>
+      <span className="text-xs font-medium w-8 text-center" style={{ color: jlptColor }}>
+        {jlptLevel ? `N${jlptLevel}` : '―'}
       </span>
       <div className="flex-grow bg-gray-100 rounded-full h-2">
         <div
@@ -198,23 +217,13 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
   const levels = ['N5', 'N4', 'N3', 'N2', 'N1', 'Unknown'];
   const maxCount = Math.max(...levels.map(level => globalKanjiByLevel[level].length));
 
-  // Updated color scale with N5 more towards green and N3 towards yellow
-  const colorScale = [
-    '#2ca02c', // N5 (easiest) - Green
-    '#82c341', // N4 - Yellow-Green
-    '#e7ba52', // N3 - Yellow (still visible on white)
-    '#fd8d3c', // N2 - Light Orange
-    '#d73027', // N1 - Dark Red
-    '#999999'  // Unknown - Grey
-  ];
-
   return (
     <div className="space-y-2">
-      {levels.map((level, index) => {
+      {levels.map((level) => {
         const globalCount = globalKanjiByLevel[level].length;
         const selectedCount = selectedKanjiByLevel ? selectedKanjiByLevel[level].length : undefined;
         const percentage = (globalCount / maxCount) * 100;
-        const barColor = colorScale[index];
+        const barColor = jlptColorScale[level === 'Unknown' ? 0 : parseInt(level.slice(1))];
 
         return (
           <div key={level} className="flex items-center space-x-2">
