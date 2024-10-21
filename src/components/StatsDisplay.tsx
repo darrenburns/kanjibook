@@ -33,8 +33,11 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   const globalKanjiByLevel = getKanjiByLevel(globalStats);
   const selectedKanjiByLevel = getKanjiByLevel(selectedStats);
 
-  // Separate selected and unselected kanji
-  const selectedKanji = sortedGlobalKanji.filter(([kanji]) => selectedStats[kanji]);
+  // Sort selected kanji based on their occurrence in the selection
+  const sortedSelectedKanji = Object.entries(selectedStats)
+    .sort((a, b) => b[1].count - a[1].count);
+
+  // Separate unselected kanji
   const unselectedKanji = sortedGlobalKanji.filter(([kanji]) => !selectedStats[kanji]);
 
   return (
@@ -69,12 +72,12 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
             <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
               Selected Kanji
             </h4>
-            {selectedKanji.map(([kanji, globalCount]) => (
+            {sortedSelectedKanji.map(([kanji, selectedCount]) => (
               <KanjiItem
                 key={kanji}
                 kanji={kanji}
-                globalCount={globalCount.count}
-                selectedCount={selectedStats[kanji]?.count || 0}
+                globalCount={globalStats[kanji].count}
+                selectedCount={selectedCount.count}
                 maxCount={maxCount}
                 hasSelection={hasSelection}
                 toggleKanjiHighlight={toggleKanjiHighlight}
