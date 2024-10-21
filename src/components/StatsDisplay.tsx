@@ -190,15 +190,23 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
 
   return (
     <div 
-      className={`flex items-center space-x-1 p-1 rounded cursor-pointer ${
+      className={`flex items-center space-x-1 p-1 rounded ${
         isSelected ? 'bg-blue-50' : ''
-      } ${isHighlighted ? 'ring-2 ring-blue-500' : ''}`}
-      onClick={() => toggleKanjiHighlight(kanji)}
+      }`}
     >
+      <button
+        onClick={() => toggleKanjiHighlight(kanji)}
+        className={`w-3 h-3 flex items-center justify-center rounded-full border ${
+          isHighlighted 
+            ? 'bg-blue-500 text-white border-blue-500' 
+            : 'bg-white text-gray-400 border-gray-300 hover:bg-gray-100'
+        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
+        title={isHighlighted ? "Remove highlight" : "Highlight kanji"}
+      >
+        
+      </button>
       <span 
-        className={`text-2xl w-8 text-center ${isSelected ? 'text-blue-600' : ''} ${
-          isHighlighted ? 'font-bold' : ''
-        }`}
+        className={`text-2xl w-8 text-center ${isSelected ? 'text-blue-600' : ''}`}
       >
         {kanji}
       </span>
