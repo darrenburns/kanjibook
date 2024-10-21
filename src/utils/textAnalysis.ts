@@ -27,6 +27,10 @@ export interface KanjiStats {
     count: number;
     jlptLevel: number | null;
     grade: number | null;
+    meaning: string;
+    kunyomi: string[];
+    onyomi: string[];
+    frequency: number | null;
   };
 }
 
@@ -42,6 +46,10 @@ export function calculateKanjiStats(text: string): KanjiStats {
         count: 0,
         jlptLevel: kanjiData ? kanjiData.jlpt_new : null,
         grade: kanjiData ? kanjiData.grade : null,
+        meaning: kanjiData ? kanjiData.meanings.join(', ') : 'Unknown',
+        kunyomi: kanjiData ? kanjiData.readings_kun : [],
+        onyomi: kanjiData ? kanjiData.readings_on : [],
+        frequency: kanjiData ? kanjiData.freq : null,
       };
     }
     stats[kanji].count += 1;

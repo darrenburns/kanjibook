@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { KanjiStats, getKanjiByLevel } from "../utils/textAnalysis";
 
 const jlptColorScale = {
@@ -107,6 +107,10 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
                 toggleKanjiHighlight={toggleKanjiHighlight}
                 isHighlighted={highlightedKanji.has(kanji)}
                 jlptLevel={globalStats[kanji].jlptLevel}
+                meaning={globalStats[kanji].meaning}
+                kunyomi={globalStats[kanji].kunyomi}
+                onyomi={globalStats[kanji].onyomi}
+                frequency={globalStats[kanji].frequency}
               />
             ))}
           </>
@@ -127,6 +131,10 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
                 toggleKanjiHighlight={toggleKanjiHighlight}
                 isHighlighted={highlightedKanji.has(kanji)}
                 jlptLevel={globalCount.jlptLevel}
+                meaning={globalCount.meaning}
+                kunyomi={globalCount.kunyomi}
+                onyomi={globalCount.onyomi}
+                frequency={globalCount.frequency}
               />
             ))}
           </>
@@ -172,6 +180,10 @@ interface KanjiItemProps {
   toggleKanjiHighlight: (kanji: string) => void;
   isHighlighted: boolean;
   jlptLevel: number | null;
+  meaning: string;
+  kunyomi: string[];
+  onyomi: string[];
+  frequency: number | null;
 }
 
 const KanjiItem: React.FC<KanjiItemProps> = ({
@@ -183,57 +195,71 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
   toggleKanjiHighlight,
   isHighlighted,
   jlptLevel,
+  meaning,
+  kunyomi,
+  onyomi,
+  frequency,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const percentage = (globalCount / maxCount) * 100;
   const isSelected = hasSelection && selectedCount > 0;
   const jlptColor = jlptColorScale[jlptLevel || 0] as string;
 
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div 
-      className={`flex items-center space-x-1 p-1 rounded ${
-        isSelected ? 'bg-blue-50' : ''
-      }`}
-    >
-      <button
-        onClick={() => toggleKanjiHighlight(kanji)}
-        className={`w-3 h-3 flex items-center justify-center rounded-full border ${
-          isHighlighted 
-            ? 'bg-blue-500 text-white border-blue-500' 
-            : 'bg-white text-gray-400 border-gray-300 hover:bg-gray-100'
-        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
-        title={isHighlighted ? "Remove highlight" : "Highlight kanji"}
-      >
-        
-      </button>
-      <span 
-        className={`text-2xl w-8 text-center ${isSelected ? 'text-blue-600' : ''}`}
-      >
-        {kanji}
-      </span>
-      <span 
-        className="text-xs w-6 font-semibold text-center rounded"
-        style={{ 
-          color: jlptColor, 
-          backgroundColor: `${jlptColor}20`,
-          border: `1px solid ${jlptColor}`
-        }}
-      >
-        {jlptLevel ? `N${jlptLevel}` : '-'}
-      </span>
-      <div className="flex-grow bg-gray-100 rounded-full h-2 min-w-[50px]">
-        <div
-          className={`rounded-full h-2 ${hasSelection ? (isSelected ? 'bg-blue-500' : 'bg-gray-300') : 'bg-blue-500'}`}
-          style={{ width: `${percentage}%` }}
-        ></div>
+    <div className={`mb-2 ${isSelected ? 'bg-blue-50' : ''} rounded-lg overflow-hidden`}>
+      <div className="flex items-center space-x-1 p-1">
+        <button
+          onClick={() => toggleKanjiHighlight(kanji)}
+          className={`w-3 h-3 flex-shrink-0 rounded-full border ${
+            isHighlighted 
+              ? 'bg-blue-500 border-blue-500' 
+              : 'bg-white border-gray-300 hover:bg-gray-100'
+          } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
+          title={isHighlighted ? "Remove highlight" : "Highlight kanji"}
+        />
+        <span 
+          onClick={toggleExpand}
+          className={`text-2xl w-8 text-center cursor-pointer ${isSelected ? 'text-blue-600' : ''}`}
+        >
+          {kanji}
+        </span>
+        <span 
+          className="text-xs w-6 font-semibold text-center rounded"
+          style={{ 
+            color: jlptColor, 
+            backgroundColor: `${jlptColor}20`,
+            border: `1px solid ${jlptColor}`
+          }}
+        >
+          {jlptLevel ? `N${jlptLevel}` : '-'}
+        </span>
+        <div className="flex-grow bg-gray-100 rounded-full h-2 min-w-[50px]">
+          <div
+            className={`rounded-full h-2 ${hasSelection ? (isSelected ? 'bg-blue-500' : 'bg-gray-300') : 'bg-blue-500'}`}
+            style={{ width: `${percentage}%` }}
+          ></div>
+        </div>
+        <span className={`text-md pl-2 font-medium text-right flex-shrink-0 ${isSelected ? 'text-blue-500' : 'text-gray-500'}`}>
+          {isSelected ? (
+            <>
+              <span className="text-blue-600">{selectedCount}</span>
+              <span className="text-gray-500"> / {globalCount}</span>
+            </>
+          ) : globalCount}
+        </span>
       </div>
-      <span className={`text-md pl-2 font-medium text-right flex-shrink-0 ${isSelected ? 'text-blue-500' : 'text-gray-500'}`}>
-        {isSelected ? (
-          <>
-            <span className="text-blue-600">{selectedCount}</span>
-            <span className="text-gray-500"> / {globalCount}</span>
-          </>
-        ) : globalCount}
-      </span>
+      {isExpanded && (
+        <div className="p-2 bg-gray-50 border-t border-gray-200">
+          <p><strong>Meaning:</strong> {meaning}</p>
+          <p><strong>Kun'yomi:</strong> {kunyomi.join(', ') || 'N/A'}</p>
+          <p><strong>On'yomi:</strong> {onyomi.join(', ') || 'N/A'}</p>
+          <p><strong>Frequency:</strong> {frequency !== null ? frequency : 'N/A'}</p>
+        </div>
+      )}
     </div>
   );
 };
