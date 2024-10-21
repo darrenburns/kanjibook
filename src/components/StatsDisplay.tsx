@@ -1,5 +1,5 @@
 import React from "react";
-import { KanjiStats } from "../utils/textAnalysis";
+import { KanjiStats, getKanjiByLevel } from "../utils/textAnalysis";
 
 interface StatsDisplayProps {
   globalStats: KanjiStats;
@@ -30,6 +30,9 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   const selectedUniqueKanjiCount = Object.keys(selectedStats).length;
   const hasSelection = selectedTotalCount > 0;
 
+  const globalKanjiByLevel = getKanjiByLevel(globalStats);
+  const selectedKanjiByLevel = getKanjiByLevel(selectedStats);
+
   // Separate selected and unselected kanji
   const selectedKanji = sortedGlobalKanji.filter(([kanji]) => selectedStats[kanji]);
   const unselectedKanji = sortedGlobalKanji.filter(([kanji]) => !selectedStats[kanji]);
@@ -48,6 +51,22 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
           selectedValue={hasSelection ? selectedUniqueKanjiCount : undefined}
         />
       </div>
+      
+      {/* JLPT Level Breakdown */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">JLPT Level Breakdown</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {['N5', 'N4', 'N3', 'N2', 'N1', 'Unknown'].map((level) => (
+            <JLPTLevelCard
+              key={level}
+              level={level}
+              globalCount={globalKanjiByLevel[level].length}
+              selectedCount={hasSelection ? selectedKanjiByLevel[level].length : undefined}
+            />
+          ))}
+        </div>
+      </div>
+
       <div className="space-y-2">
         {hasSelection && (
           <>
@@ -153,6 +172,29 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
       <span className={`text-sm font-medium ${isSelected ? 'text-blue-600' : 'text-gray-600'}`}>
         {isSelected ? `${selectedCount} / ${globalCount}` : globalCount}
       </span>
+    </div>
+  );
+};
+
+interface JLPTLevelCardProps {
+  level: string;
+  globalCount: number;
+  selectedCount?: number;
+}
+
+const JLPTLevelCard: React.FC<JLPTLevelCardProps> = ({ level, globalCount, selectedCount }) => {
+  return (
+    <div className="bg-white rounded-lg shadow-sm p-2 border border-gray-100 text-center">
+      <h4 className="text-sm font-medium text-gray-700 mb-1">{level}</h4>
+      <p className="text-lg font-semibold">
+        {selectedCount !== undefined ? (
+          <>
+            <span className="text-blue-600">{selectedCount}</span>
+            <span className="text-gray-300 mx-1">/</span>
+          </>
+        ) : null}
+        <span className="text-gray-800">{globalCount}</span>
+      </p>
     </div>
   );
 };
