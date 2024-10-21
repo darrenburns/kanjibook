@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "writingway",
+  "productName": "kanjibook",
   "version": "0.1.0",
-  "identifier": "darren.codes.writingway",
+  "identifier": "darren.codes.kanjibook",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -15,7 +15,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Writingway",
+        "title": "Kanjibook",
         "width": 800
       }
     ],
