@@ -43,6 +43,8 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   outline: none;
   padding: 1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .ProseMirror p {
@@ -53,4 +55,10 @@ h1, h2, h3, h4, h5, h6 {
 .ProseMirror mark {
   background-color: #fce7f3; /* This should match the color used in the setHighlight command */
   color: inherit;
+}
+
+.ProseMirror p.preserve-whitespace {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
 }

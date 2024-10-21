@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Highlight from '@tiptap/extension-highlight';
 
 interface EditorProps {
   content: string;
@@ -16,58 +15,33 @@ const Editor: React.FC<EditorProps> = ({
   setContent,
   setSelectedText,
   fontSize,
-  highlightedKanji,
 }) => {
-  const [editorContent, setEditorContent] = useState(content);
-
-  const handleSelectionUpdate = useCallback(({ editor }) => {
-    const { from, to } = editor.state.selection;
-    const selectedText = editor.state.doc.textBetween(from, to, ' ');
-    setSelectedText(selectedText);
-  }, [setSelectedText]);
-
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Highlight.configure({
-        multicolor: true,
+      StarterKit.configure({
+        paragraph: {
+          HTMLAttributes: {
+            class: 'preserve-whitespace',
+          },
+        },
       }),
     ],
-    content: editorContent,
+    content: content,
     onUpdate: ({ editor }) => {
-      const newContent = editor.getText();
-      setContent(newContent);
-      setEditorContent(newContent);
+      setContent(editor.getText());
     },
-    onSelectionUpdate: handleSelectionUpdate,
+    onSelectionUpdate: ({ editor }) => {
+      const { from, to } = editor.state.selection;
+      const selectedText = editor.state.doc.textBetween(from, to, ' ');
+      setSelectedText(selectedText);
+    },
   });
 
   useEffect(() => {
-    if (editor) {
+    if (editor && editor.getText() !== content) {
       editor.commands.setContent(content);
-      
-      // Remove all existing highlights
-      editor.commands.unsetHighlight();
-
-      // Apply new highlights
-      const kanjiRegex = /[\u4e00-\u9faf]/g;
-      let match;
-      while ((match = kanjiRegex.exec(content)) !== null) {
-        const kanji = match[0];
-        if (highlightedKanji.has(kanji)) {
-          const start = match.index + 1;
-          const end = start + 1;
-          editor.chain().focus().setTextSelection({ from: start, to: end })
-            .setHighlight({ color: '#fce7f3' })
-            .run();
-        }
-      }
-      
-      // Reset selection and focus
-      editor.commands.setTextSelection(0);
-      editor.commands.blur();
     }
-  }, [content, highlightedKanji, editor]);
+  }, [content, editor]);
 
   return (
     <div className="editor-container w-full h-full overflow-auto">
