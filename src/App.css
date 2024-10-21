@@ -26,3 +26,25 @@ h1, h2, h3, h4, h5, h6 {
 .highlighted-kanji {
   background-color: rgba(255, 0, 0, 0.2); /* Subtle red background */
 }
+
+/* TipTap editor styles */
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.editor-content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.ProseMirror {
+  height: 100%;
+  outline: none;
+  padding: 1rem;
+}
+
+.ProseMirror p {
+  margin: 0;
+}
