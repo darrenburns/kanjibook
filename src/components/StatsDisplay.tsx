@@ -171,32 +171,39 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
 }) => {
   const percentage = (globalCount / maxCount) * 100;
   const isSelected = hasSelection && selectedCount > 0;
-  const jlptColor = jlptColorScale[jlptLevel || 0];
+  const jlptColor = jlptColorScale[jlptLevel || 0] as string;
 
   return (
     <div 
-      className={`flex items-center space-x-2 p-1 rounded cursor-pointer ${
+      className={`flex items-center space-x-1 p-1 rounded cursor-pointer ${
         isSelected ? 'bg-blue-50' : ''
       } ${isHighlighted ? 'ring-2 ring-blue-500' : ''}`}
       onClick={() => toggleKanjiHighlight(kanji)}
     >
       <span 
-        className={`text-2xl w-8 ${isSelected ? 'text-blue-600' : ''} ${
+        className={`text-2xl w-8 text-center ${isSelected ? 'text-blue-600' : ''} ${
           isHighlighted ? 'font-bold' : ''
         }`}
       >
         {kanji}
       </span>
-      <span className="text-xs font-medium w-8 text-center" style={{ color: jlptColor }}>
-        {jlptLevel ? `N${jlptLevel}` : '―'}
+      <span 
+        className="text-xs w-6 font-semibold text-center rounded"
+        style={{ 
+          color: jlptColor, 
+          backgroundColor: `${jlptColor}20`,
+          border: `1px solid ${jlptColor}`
+        }}
+      >
+        {jlptLevel ? `N${jlptLevel}` : '-'}
       </span>
-      <div className="flex-grow bg-gray-100 rounded-full h-2">
+      <div className="flex-grow bg-gray-100 rounded-full h-2 min-w-[50px]">
         <div
           className={`rounded-full h-2 ${hasSelection ? (isSelected ? 'bg-blue-500' : 'bg-gray-300') : 'bg-blue-500'}`}
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
-      <span className={`text-sm font-medium ${isSelected ? 'text-blue-600' : 'text-gray-500'}`}>
+      <span className={`text-md pl-2 font-medium text-right flex-shrink-0 ${isSelected ? 'text-blue-500' : 'text-gray-500'}`}>
         {isSelected ? (
           <>
             <span className="text-blue-600">{selectedCount}</span>
@@ -227,7 +234,7 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
 
         return (
           <div key={level} className="flex items-center space-x-2">
-            <span className="text-sm font-medium w-16">{level === 'Unknown' ? 'Other' : level}</span>
+            <span className="text-sm font-medium w-10">{level === 'Unknown' ? 'Other' : level}</span>
             <div className="flex-grow bg-gray-100 rounded-full h-4 overflow-hidden">
               <div
                 className="h-full"
