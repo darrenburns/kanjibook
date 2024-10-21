@@ -2,9 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overscroll-behavior: none;
+}
+
 body {
   @apply antialiased text-gray-800;
-  overscroll-behavior-y: none;
 }
 
 h1, h2, h3, h4, h5, h6 {
