@@ -54,14 +54,17 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        {highlightedKanji.size > 0 && (
-          <button
-            onClick={clearHighlightedKanji}
-            className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
-          >
-            Clear Highlights
-          </button>
-        )}
+        <div className="flex-grow">
+          {highlightedKanji.size > 0 && (
+            <button
+              onClick={clearHighlightedKanji}
+              className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
+            >
+              Clear Highlights
+            </button>
+          )}
+        </div>
+        <h2 className="text-2xl font-extrabold text-gray-800">Kanji Stats</h2>
       </div>
 
       {/* Add the stat cards here */}
@@ -211,7 +214,7 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
       <div className="flex items-center space-x-1 p-1">
         <button
           onClick={() => toggleKanjiHighlight(kanji)}
-          className={`w-3 h-3 flex-shrink-0 rounded-full border ${
+          className={`w-4 h-4 flex-shrink-0 rounded-full border ${
             isHighlighted 
               ? 'bg-blue-500 border-blue-500' 
               : 'bg-white border-gray-300 hover:bg-gray-100'
