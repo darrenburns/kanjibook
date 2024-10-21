@@ -181,24 +181,43 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
   const levels = ['N5', 'N4', 'N3', 'N2', 'N1', 'Unknown'];
   const maxCount = Math.max(...levels.map(level => globalKanjiByLevel[level].length));
 
+  // Perceptually uniform color scale from green to red
+  const colorScale = [
+    '#1a9850', // N5 (easiest) - Green
+    '#91cf60',
+    '#d9ef8b',
+    '#fee08b',
+    '#fc8d59',
+    '#d73027'  // N1 (hardest) - Red
+  ];
+
   return (
     <div className="space-y-2">
-      {levels.map((level) => {
+      {levels.map((level, index) => {
         const globalCount = globalKanjiByLevel[level].length;
         const selectedCount = selectedKanjiByLevel ? selectedKanjiByLevel[level].length : undefined;
         const percentage = (globalCount / maxCount) * 100;
+        const barColor = level === 'Unknown' ? '#808080' : colorScale[index];
 
         return (
           <div key={level} className="flex items-center space-x-2">
             <span className="text-sm font-medium w-16">{level}</span>
             <div className="flex-grow bg-gray-100 rounded-full h-4 overflow-hidden">
               <div
-                className={`h-full ${selectedCount !== undefined ? 'bg-blue-500' : 'bg-gray-400'}`}
-                style={{ width: `${percentage}%` }}
+                className="h-full"
+                style={{ 
+                  width: `${percentage}%`,
+                  backgroundColor: barColor
+                }}
               ></div>
             </div>
             <span className="text-sm font-medium w-16 text-right">
-              {selectedCount !== undefined ? `${selectedCount} / ${globalCount}` : globalCount}
+              {selectedCount !== undefined ? (
+                <>
+                  <span className="text-blue-600">{selectedCount}</span>
+                  <span className="text-gray-500"> / {globalCount}</span>
+                </>
+              ) : globalCount}
             </span>
           </div>
         );
