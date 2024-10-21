@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Extension } from '@tiptap/core';
@@ -46,6 +46,12 @@ const Editor: React.FC<EditorProps> = ({
 }) => {
   const [editorContent, setEditorContent] = useState(content);
 
+  const handleSelectionUpdate = useCallback(({ editor }) => {
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, ' ');
+    setSelectedText(selectedText);
+  }, [setSelectedText]);
+
   const editor = useEditor({
     extensions: [StarterKit, HighlightKanji],
     content: editorContent,
@@ -54,9 +60,7 @@ const Editor: React.FC<EditorProps> = ({
       setContent(newContent);
       setEditorContent(newContent);
     },
-    onSelectionUpdate: ({ editor }) => {
-      setSelectedText(editor.state.selection.content().content.textBetween(0, -1, ' '));
-    },
+    onSelectionUpdate: handleSelectionUpdate,
   });
 
   useEffect(() => {
@@ -70,7 +74,7 @@ const Editor: React.FC<EditorProps> = ({
       });
       editor.commands.setContent(highlightedContent);
     }
-  }, [content, highlightedKanji, editor]);
+  }, [content, highlightedKanji, editor, editorContent]);
 
   return (
     <div className="editor-container w-full h-full overflow-auto">
