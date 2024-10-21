@@ -66,6 +66,9 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
       <div className="space-y-2">
         {hasSelection && (
           <>
+            <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+              Selected Kanji
+            </h4>
             {selectedKanji.map(([kanji, globalCount]) => (
               <KanjiItem
                 key={kanji}
@@ -83,18 +86,25 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
             )}
           </>
         )}
-        {unselectedKanji.map(([kanji, globalCount]) => (
-          <KanjiItem
-            key={kanji}
-            kanji={kanji}
-            globalCount={globalCount.count}
-            selectedCount={selectedStats[kanji]?.count || 0}
-            maxCount={maxCount}
-            hasSelection={hasSelection}
-            toggleKanjiHighlight={toggleKanjiHighlight}
-            isHighlighted={highlightedKanji.has(kanji)}
-          />
-        ))}
+        {unselectedKanji.length > 0 && (
+          <>
+            <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+              {hasSelection ? "Unselected Kanji" : "All Kanji"}
+            </h4>
+            {unselectedKanji.map(([kanji, globalCount]) => (
+              <KanjiItem
+                key={kanji}
+                kanji={kanji}
+                globalCount={globalCount.count}
+                selectedCount={selectedStats[kanji]?.count || 0}
+                maxCount={maxCount}
+                hasSelection={hasSelection}
+                toggleKanjiHighlight={toggleKanjiHighlight}
+                isHighlighted={highlightedKanji.has(kanji)}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
@@ -107,19 +117,21 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, selectedValue }) => {
+  const hasSelection = selectedValue !== undefined;
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
       <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
         {title}
       </h3>
       <p className="text-2xl font-semibold">
-        {selectedValue !== undefined ? (
+        {hasSelection ? (
           <>
             <span className="text-blue-600">{selectedValue}</span>
             <span className="text-gray-300 mx-1">/</span>
           </>
         ) : null}
-        <span className="text-gray-800">{value}</span>
+        <span className={hasSelection ? "text-gray-400" : "text-gray-800"}>{value}</span>
       </p>
     </div>
   );
@@ -165,8 +177,13 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
-      <span className={`text-sm font-medium ${isSelected ? 'text-blue-600' : 'text-gray-600'}`}>
-        {isSelected ? `${selectedCount} / ${globalCount}` : globalCount}
+      <span className={`text-sm font-medium ${isSelected ? 'text-blue-600' : 'text-gray-500'}`}>
+        {isSelected ? (
+          <>
+            <span className="text-blue-600">{selectedCount}</span>
+            <span className="text-gray-500"> / {globalCount}</span>
+          </>
+        ) : globalCount}
       </span>
     </div>
   );
