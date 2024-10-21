@@ -35,13 +35,13 @@ h1, h2, h3, h4, h5, h6 {
 .ProseMirror {
   height: 100%;
   outline: none;
-  padding: 1rem;
+  padding: 2rem;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 
 .ProseMirror p {
-  margin: 0;
+  padding-bottom: 1rem;
 }
 
 /* Add this to your existing styles */
