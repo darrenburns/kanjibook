@@ -54,7 +54,6 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Kanji Stats</h2>
         {highlightedKanji.size > 0 && (
           <button
             onClick={clearHighlightedKanji}
@@ -81,7 +80,6 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
       
       {/* JLPT Level Breakdown */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">JLPT Level Breakdown</h3>
         <JLPTLevelBreakdown
           globalKanjiByLevel={globalKanjiByLevel}
           selectedKanjiByLevel={hasSelection ? selectedKanjiByLevel : undefined}
@@ -89,7 +87,6 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
       </div>
 
       {/* Kanji counts */}
-      <h3 className="text-lg font-semibold mb-2">Kanji Counts</h3>
       <div className="space-y-2">
         {hasSelection && (
           <>
@@ -274,17 +271,37 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
   const maxCount = Math.max(...levels.map(level => globalKanjiByLevel[level].length));
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-wrap gap-2">
       {levels.map((level) => {
         const globalCount = globalKanjiByLevel[level].length;
         const selectedCount = selectedKanjiByLevel ? selectedKanjiByLevel[level].length : undefined;
         const percentage = (globalCount / maxCount) * 100;
-        const barColor = jlptColorScale[level === 'Unknown' ? 0 : parseInt(level.slice(1))];
+        const jlptLevel = level === 'Unknown' ? 0 : parseInt(level.slice(1));
+        const barColor = jlptColorScale[jlptLevel];
 
         return (
-          <div key={level} className="flex items-center space-x-2">
-            <span className="text-sm font-medium w-10">{level === 'Unknown' ? 'Other' : level}</span>
-            <div className="flex-grow bg-gray-100 rounded-full h-4 overflow-hidden">
+          <div key={level} className="flex-1 min-w-[100px] mb-1">
+            <div className="flex items-center justify-between mb-1.5">
+              <span 
+                className="text-xs font-semibold text-center rounded px-1"
+                style={{ 
+                  color: barColor, 
+                  backgroundColor: `${barColor}20`,
+                  border: `1px solid ${barColor}`
+                }}
+              >
+                {level === 'Unknown' ? 'Other' : level}
+              </span>
+              <span className="text-xs font-medium">
+                {selectedCount !== undefined ? (
+                  <>
+                    <span className="text-blue-600">{selectedCount}</span>
+                    <span className="text-gray-500">/{globalCount}</span>
+                  </>
+                ) : globalCount}
+              </span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-1 overflow-hidden">
               <div
                 className="h-full"
                 style={{ 
@@ -293,14 +310,6 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
                 }}
               ></div>
             </div>
-            <span className="text-sm font-medium w-16 text-right">
-              {selectedCount !== undefined ? (
-                <>
-                  <span className="text-blue-600">{selectedCount}</span>
-                  <span className="text-gray-500"> / {globalCount}</span>
-                </>
-              ) : globalCount}
-            </span>
           </div>
         );
       })}
