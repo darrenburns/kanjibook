@@ -15,16 +15,8 @@ h1, h2, h3, h4, h5, h6 {
   user-select: none;
 }
 
-.resize-cursor {
-  cursor: col-resize !important;
-}
-
-.select-none {
-  user-select: none !important;
-}
-
 .highlighted-kanji {
-  background-color: rgba(255, 0, 0, 0.2); /* Subtle red background */
+  background-color: rgba(255, 204, 0, 0.671); /* Subtle red background */
 }
 
 /* TipTap editor styles */
