@@ -7,7 +7,7 @@ import "./App.css";
 const App: React.FC = () => {
   const [content, setContent] = useState("");
   const [selectedText, setSelectedText] = useState("");
-  const [fontSize, setFontSize] = useState(16);
+  const [fontSize, setFontSize] = useState(20);
   const [highlightedKanji, setHighlightedKanji] = useState<Set<string>>(new Set());
 
   const toggleKanjiHighlight = (kanji: string) => {
