@@ -16,7 +16,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .highlighted-kanji {
-  background-color: rgba(255, 204, 0, 0.671); /* Subtle red background */
+  background-color: #ff25a0;
+  border-radius: 2px;
 }
 
 /* TipTap editor styles */
@@ -45,7 +46,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Add this to your existing styles */
 .ProseMirror mark {
-  background-color: #fce7f3; /* This should match the color used in the setHighlight command */
+  background-color: #fce7f3; /* This should match the color used in the setMark command */
   color: inherit;
 }
 

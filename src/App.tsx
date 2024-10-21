@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Editor from "./components/Editor";
 import Sidebar from "./components/Sidebar";
 import EditorFooter from "./components/EditorFooter";
@@ -7,10 +7,10 @@ import "./App.css";
 const App: React.FC = () => {
   const [content, setContent] = useState("");
   const [selectedText, setSelectedText] = useState("");
-  const [fontSize, setFontSize] = useState(20);
+  const [fontSize, setFontSize] = useState(16);
   const [highlightedKanji, setHighlightedKanji] = useState<Set<string>>(new Set());
 
-  const toggleKanjiHighlight = (kanji: string) => {
+  const toggleKanji = useCallback((kanji: string) => {
     setHighlightedKanji(prev => {
       const newSet = new Set(prev);
       if (newSet.has(kanji)) {
@@ -20,7 +20,7 @@ const App: React.FC = () => {
       }
       return newSet;
     });
-  };
+  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
@@ -38,7 +38,7 @@ const App: React.FC = () => {
         <Sidebar 
           content={content} 
           selectedText={selectedText} 
-          toggleKanjiHighlight={toggleKanjiHighlight}
+          toggleKanjiHighlight={toggleKanji}
           highlightedKanji={highlightedKanji}
         />
       </div>

@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside 
       ref={sidebarRef}
-      className="bg-white shadow-lg flex flex-col relative h-screen" 
+      className="bg-white shadow-lg flex flex-col relative h-screen no-select" 
       style={{ width: `${width}px`, minWidth: '250px', maxWidth: '600px' }}
     >
       <div

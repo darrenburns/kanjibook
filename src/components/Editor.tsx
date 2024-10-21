@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { HighlightedKanjiMark } from '../extensions/HighlightedKanjiMark';
 
 interface EditorProps {
   content: string;
@@ -15,16 +16,12 @@ const Editor: React.FC<EditorProps> = ({
   setContent,
   setSelectedText,
   fontSize,
+  highlightedKanji,
 }) => {
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        paragraph: {
-          HTMLAttributes: {
-            class: 'preserve-whitespace',
-          },
-        },
-      }),
+      StarterKit,
+      HighlightedKanjiMark,
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -43,6 +40,12 @@ const Editor: React.FC<EditorProps> = ({
     }
   }, [content, editor]);
 
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setHighlightedKanji(highlightedKanji);
+    }
+  }, [editor, highlightedKanji]);
+
   return (
     <div className="editor-container w-full h-full overflow-auto">
       <EditorContent
@@ -54,4 +57,4 @@ const Editor: React.FC<EditorProps> = ({
   );
 };
 
-export default Editor;
+export default React.memo(Editor);
