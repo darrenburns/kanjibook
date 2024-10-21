@@ -11,7 +11,7 @@ const EditorFooter: React.FC<EditorFooterProps> = ({ fontSize, setFontSize }) =>
   };
 
   return (
-    <div className="bg-gray-200 text-gray-600 border-t border-gray-300 flex items-center justify-end p-1 no-select">
+    <div className="bg-gray-200 text-gray-600 border-t border-gray-300 flex items-center justify-end p-1 select-none">
       <button
         className="px-1.5 text-sm hover:bg-gray-300 border w-6 rounded-l-sm border-gray-300"
         onClick={() => changeFontSize(-1)}

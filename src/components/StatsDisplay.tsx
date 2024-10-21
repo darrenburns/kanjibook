@@ -253,21 +253,22 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
         </span>
       </div>
       {isExpanded && (
-        <div className="p-3 bg-gray-50 border-t border-gray-200">
+        <div className="p-3 bg-gray-50 border-t border-gray-200 select-auto">
           <div className="flex justify-between items-start mb-2">
             <div className="text-sm text-gray-800">{meaning}</div>
             {frequency !== null && (
-              <span className="text-xs font-medium text-gray-500 bg-gray-200 rounded-full px-2 py-1">
+              <span className="text-xs font-medium text-blue-500 border border-blue-200 bg-blue-100 rounded-full px-2 py-0.5">
                 #{frequency}
               </span>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div>
+          <div className="flex text-sm">
+            <div className="flex-1">
               <span className="font-medium text-gray-600">Kun'yomi:</span>
               <div className="text-gray-800">{kunyomi.join(', ') || 'N/A'}</div>
             </div>
-            <div>
+            <div className="w-px bg-gray-300 mx-2"></div>
+            <div className="flex-1">
               <span className="font-medium text-gray-600">On'yomi:</span>
               <div className="text-gray-800">{onyomi.join(', ') || 'N/A'}</div>
             </div>
