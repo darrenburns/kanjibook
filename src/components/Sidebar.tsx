@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import StatsDisplay from "./StatsDisplay";
+import AIAssistPanel from "./AIAssistPanel";
 import { calculateKanjiStats } from "../utils/textAnalysis";
 
 interface SidebarProps {
@@ -107,10 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           />
         )}
         {activeTab === 'aiAssist' && (
-          <div>
-            {/* AI Assist content will go here */}
-            <p>AI Assist tab content (coming soon)</p>
-          </div>
+          <AIAssistPanel selectedText={selectedText} />
         )}
       </div>
     </aside>

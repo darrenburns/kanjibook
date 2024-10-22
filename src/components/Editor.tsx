@@ -11,6 +11,7 @@ interface EditorProps {
   fontSize: number;
   highlightedKanji: Set<string>;
   setExplanation: (explanation: string) => void;
+  onAskAI: (selectedText: string) => void;
 }
 
 const Editor: React.FC<EditorProps> = ({
@@ -20,6 +21,7 @@ const Editor: React.FC<EditorProps> = ({
   fontSize,
   highlightedKanji,
   setExplanation,
+  onAskAI,
 }) => {
   const editor = useEditor({
     extensions: [
@@ -37,7 +39,7 @@ const Editor: React.FC<EditorProps> = ({
     },
   });
 
-  const handleKeyDown = useCallback(async (event: KeyboardEvent) => {
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.ctrlKey && event.key === 'e' && editor) {
       event.preventDefault();
       const selectedText = editor.state.doc.textBetween(
@@ -47,11 +49,10 @@ const Editor: React.FC<EditorProps> = ({
       );
       if (selectedText) {
         setExplanation('Loading explanation...');
-        const explanation = await explainText(selectedText);
-        setExplanation(explanation);
+        onAskAI(selectedText);
       }
     }
-  }, [editor, setExplanation]);
+  }, [editor, setExplanation, onAskAI]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);

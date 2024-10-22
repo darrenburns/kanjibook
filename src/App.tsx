@@ -10,6 +10,7 @@ const App: React.FC = () => {
   const [fontSize, setFontSize] = useState(20);
   const [highlightedKanji, setHighlightedKanji] = useState<Set<string>>(new Set());
   const [explanation, setExplanation] = useState("");
+  const [activeTab, setActiveTab] = useState<'kanjiStats' | 'aiAssist'>('kanjiStats');
 
   const toggleKanji = useCallback((kanji: string) => {
     setHighlightedKanji(prev => {
@@ -27,6 +28,10 @@ const App: React.FC = () => {
     setHighlightedKanji(new Set());
   }, []);
 
+  const handleAskAI = useCallback((selectedText: string) => {
+    setActiveTab('aiAssist');
+  }, []);
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       <div className="flex-grow flex flex-col overflow-hidden">
@@ -37,6 +42,7 @@ const App: React.FC = () => {
           fontSize={fontSize}
           highlightedKanji={highlightedKanji}
           setExplanation={setExplanation}
+          onAskAI={handleAskAI}
         />
         <EditorFooter 
           fontSize={fontSize} 
@@ -51,6 +57,8 @@ const App: React.FC = () => {
           highlightedKanji={highlightedKanji}
           clearHighlightedKanji={clearHighlightedKanji}
           explanation={explanation}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
         />
       </div>
     </div>

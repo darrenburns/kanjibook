@@ -251,10 +251,12 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
           ) : globalCount}
         </span>
       </div>
+
+      {/* The meaning is displayed when the kanji is clicked */}
       {isExpanded && (
         <div className="p-3 bg-gray-50 border-t border-gray-200 select-auto">
           <div className="flex justify-between items-start mb-2">
-            <div className="text-sm text-gray-800">{meaning}</div>
+            <div className="text-sm font-medium text-gray-800">{meaning}</div>
             {frequency !== null && (
               <span className="text-xs font-medium text-blue-500 border border-blue-200 bg-blue-100 rounded-full px-2 py-0.5">
                 #{frequency}
