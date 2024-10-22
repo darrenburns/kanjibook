@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import Editor from "./components/Editor";
 import Sidebar from "./components/Sidebar";
 import EditorFooter from "./components/EditorFooter";
-import AIResponsePanel from "./components/AIResponsePanel";
 import "./App.css";
 
 const App: React.FC = () => {
@@ -11,7 +10,6 @@ const App: React.FC = () => {
   const [fontSize, setFontSize] = useState(20);
   const [highlightedKanji, setHighlightedKanji] = useState<Set<string>>(new Set());
   const [explanation, setExplanation] = useState("");
-  const [isAIPanelVisible, setIsAIPanelVisible] = useState(false);
 
   const toggleKanji = useCallback((kanji: string) => {
     setHighlightedKanji(prev => {
@@ -29,10 +27,6 @@ const App: React.FC = () => {
     setHighlightedKanji(new Set());
   }, []);
 
-  const toggleAIPanel = useCallback(() => {
-    setIsAIPanelVisible(prev => !prev);
-  }, []);
-
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       <div className="flex-grow flex flex-col overflow-hidden">
@@ -47,10 +41,7 @@ const App: React.FC = () => {
         <EditorFooter 
           fontSize={fontSize} 
           setFontSize={setFontSize} 
-          isAIPanelVisible={isAIPanelVisible}
-          toggleAIPanel={toggleAIPanel}
         />
-        <AIResponsePanel isVisible={isAIPanelVisible} response={explanation} />
       </div>
       <div className="flex-shrink-0">
         <Sidebar 
