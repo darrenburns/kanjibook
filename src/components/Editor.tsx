@@ -40,7 +40,7 @@ const Editor: React.FC<EditorProps> = ({
   });
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.ctrlKey && event.key === 'e' && editor) {
+    if (event.metaKey && event.key === 'l' && editor) {
       event.preventDefault();
       const selectedText = editor.state.doc.textBetween(
         editor.state.selection.from,

@@ -21,7 +21,7 @@ const AIAssistPanel: React.FC<AIAssistPanelProps> = ({ selectedText }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2 mt-6">
       {selectedText && (
         <div className="bg-blue-50 p-4 rounded-lg">
           <h3 className="text-sm font-semibold text-blue-800 mb-2">Selected Text:</h3>

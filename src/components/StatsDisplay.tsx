@@ -263,7 +263,7 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
               </span>
             )}
           </div>
-          <div className="flex text-sm">
+          <div className="flex text-sm mb-2">
             <div className="flex-1">
               <span className="font-medium text-gray-600">Kun'yomi:</span>
               <div className="text-gray-800">{kunyomi.join(', ') || 'N/A'}</div>
@@ -273,6 +273,24 @@ const KanjiItem: React.FC<KanjiItemProps> = ({
               <span className="font-medium text-gray-600">On'yomi:</span>
               <div className="text-gray-800">{onyomi.join(', ') || 'N/A'}</div>
             </div>
+          </div>
+          {/* Updated external links section */}
+          <div className="flex space-x-2 mt-2">
+            <ExternalLinkButton
+              href={`https://www.wanikani.com/kanji/${kanji}`}
+              label="Wanikani"
+              color="bg-pink-500 hover:bg-pink-600"
+            />
+            <ExternalLinkButton
+              href={`https://jpdb.io/kanji/${kanji}`}
+              label="JPDB.io"
+              color="bg-purple-500 hover:bg-purple-600"
+            />
+            <ExternalLinkButton
+              href={`https://jisho.org/search/${kanji}%20%23kanji`}
+              label="Jisho"
+              color="bg-green-500 hover:bg-green-600"
+            />
           </div>
         </div>
       )}
@@ -335,5 +353,23 @@ const JLPTLevelBreakdown: React.FC<JLPTLevelBreakdownProps> = ({ globalKanjiByLe
     </div>
   );
 };
+
+// Updated ExternalLinkButton component
+interface ExternalLinkButtonProps {
+  href: string;
+  label: string;
+  color: string;
+}
+
+const ExternalLinkButton: React.FC<ExternalLinkButtonProps> = ({ href, label, color }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={`inline-flex items-center px-1.5 py-0.5 text-xs font-medium text-white rounded ${color} transition-colors duration-150 ease-in-out`}
+  >
+    {label}
+  </a>
+);
 
 export default StatsDisplay;
