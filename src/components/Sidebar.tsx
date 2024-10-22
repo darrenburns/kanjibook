@@ -24,6 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [width, setWidth] = useState(384); // 384px is equivalent to w-96
   const sidebarRef = useRef<HTMLDivElement>(null);
   const resizeHandleRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<'kanjiStats' | 'aiAssist'>('kanjiStats');
 
   const handleResize = useCallback((e: MouseEvent) => {
     if (sidebarRef.current) {
@@ -59,6 +60,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     };
   }, [handleMouseDown]);
 
+  const handleTabChange = (tab: 'kanjiStats' | 'aiAssist') => {
+    setActiveTab(tab);
+  };
+
   return (
     <aside 
       ref={sidebarRef}
@@ -69,20 +74,44 @@ const Sidebar: React.FC<SidebarProps> = ({
         ref={resizeHandleRef}
         className="w-1 bg-gray-200 hover:bg-gray-300 cursor-col-resize absolute left-0 top-0 bottom-0"
       />
+      <div className="flex border-b border-gray-200">
+        <button
+          className={`flex-1 py-2 px-4 text-sm font-medium ${
+            activeTab === 'kanjiStats'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+          onClick={() => handleTabChange('kanjiStats')}
+        >
+          Kanji Stats
+        </button>
+        <button
+          className={`flex-1 py-2 px-4 text-sm font-medium ${
+            activeTab === 'aiAssist'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+          onClick={() => handleTabChange('aiAssist')}
+        >
+          AI Assist
+        </button>
+      </div>
       <div className="p-6 flex-grow overflow-auto">
-        {explanation && (
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">Explanation</h3>
-            <p>{explanation}</p>
+        {activeTab === 'kanjiStats' && (
+          <StatsDisplay 
+            globalStats={globalStats} 
+            selectedStats={selectedStats} 
+            toggleKanjiHighlight={toggleKanjiHighlight}
+            highlightedKanji={highlightedKanji}
+            clearHighlightedKanji={clearHighlightedKanji}
+          />
+        )}
+        {activeTab === 'aiAssist' && (
+          <div>
+            {/* AI Assist content will go here */}
+            <p>AI Assist tab content (coming soon)</p>
           </div>
         )}
-        <StatsDisplay 
-          globalStats={globalStats} 
-          selectedStats={selectedStats} 
-          toggleKanjiHighlight={toggleKanjiHighlight}
-          highlightedKanji={highlightedKanji}
-          clearHighlightedKanji={clearHighlightedKanji}
-        />
       </div>
     </aside>
   );
