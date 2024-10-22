@@ -1,8 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { HighlightedKanjiMark } from '../extensions/HighlightedKanjiMark';
-import { explainText } from '../utils/claudeApi';
+import { open } from '@tauri-apps/plugin-shell';
 
 interface EditorProps {
   content: string;
@@ -23,6 +23,8 @@ const Editor: React.FC<EditorProps> = ({
   setExplanation,
   onAskAI,
 }) => {
+  const editorRef = useRef<HTMLDivElement>(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -40,25 +42,60 @@ const Editor: React.FC<EditorProps> = ({
   });
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.metaKey && event.key === 'l' && editor) {
-      event.preventDefault();
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    const modifierKey = isMac ? event.metaKey : event.ctrlKey;
+
+    if (modifierKey && editor) {
       const selectedText = editor.state.doc.textBetween(
         editor.state.selection.from,
         editor.state.selection.to,
         ' '
       );
+
       if (selectedText) {
-        setExplanation('Loading explanation...');
-        onAskAI(selectedText);
+        let url = '';
+        const isKanji = selectedText.length === 1 && /[\u4e00-\u9faf]/.test(selectedText);
+
+        switch (event.key.toLowerCase()) {
+          case 'j':
+            event.preventDefault();
+            url = isKanji
+              ? `https://jisho.org/search/${encodeURIComponent(selectedText)}%20%23kanji`
+              : `https://jisho.org/search/${encodeURIComponent(selectedText)}`;
+            open(url);
+            break;
+          case 'p':
+            event.preventDefault();
+            url = isKanji
+              ? `https://jpdb.io/kanji/${encodeURIComponent(selectedText)}`
+              : `https://jpdb.io/search?q=${encodeURIComponent(selectedText)}`;
+            open(url);
+            break;
+          case 'w':
+            event.preventDefault();
+            url = isKanji
+              ? `https://www.wanikani.com/kanji/${encodeURIComponent(selectedText)}`
+              : `https://www.wanikani.com/search?query=${encodeURIComponent(selectedText)}`;
+            open(url);
+            break;
+          case 'l':
+            event.preventDefault();
+            setExplanation('Loading explanation...');
+            onAskAI(selectedText);
+            break;
+        }
       }
     }
   }, [editor, setExplanation, onAskAI]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    const editorElement = editorRef.current;
+    if (editorElement) {
+      editorElement.addEventListener('keydown', handleKeyDown);
+      return () => {
+        editorElement.removeEventListener('keydown', handleKeyDown);
+      };
+    }
   }, [handleKeyDown]);
 
   useEffect(() => {
@@ -74,7 +111,7 @@ const Editor: React.FC<EditorProps> = ({
   }, [editor, highlightedKanji]);
 
   return (
-    <div className="editor-container w-full h-full overflow-auto">
+    <div ref={editorRef} className="editor-container w-full h-full overflow-auto">
       <EditorContent
         editor={editor}
         className="editor-content h-full"
