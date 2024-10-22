@@ -8,6 +8,7 @@ interface SidebarProps {
   toggleKanjiHighlight: (kanji: string) => void;
   highlightedKanji: Set<string>;
   clearHighlightedKanji: () => void;
+  explanation: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -15,7 +16,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   selectedText, 
   toggleKanjiHighlight,
   highlightedKanji,
-  clearHighlightedKanji
+  clearHighlightedKanji,
+  explanation
 }) => {
   const globalStats = calculateKanjiStats(content);
   const selectedStats = calculateKanjiStats(selectedText);
@@ -68,6 +70,12 @@ const Sidebar: React.FC<SidebarProps> = ({
         className="w-1 bg-gray-200 hover:bg-gray-300 cursor-col-resize absolute left-0 top-0 bottom-0"
       />
       <div className="p-6 flex-grow overflow-auto">
+        {explanation && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Explanation</h3>
+            <p>{explanation}</p>
+          </div>
+        )}
         <StatsDisplay 
           globalStats={globalStats} 
           selectedStats={selectedStats} 

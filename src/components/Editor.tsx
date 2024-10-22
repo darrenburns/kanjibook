@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { HighlightedKanjiMark } from '../extensions/HighlightedKanjiMark';
+import { explainText } from '../utils/claudeApi';
 
 interface EditorProps {
   content: string;
@@ -9,6 +10,7 @@ interface EditorProps {
   setSelectedText: (selectedText: string) => void;
   fontSize: number;
   highlightedKanji: Set<string>;
+  setExplanation: (explanation: string) => void;
 }
 
 const Editor: React.FC<EditorProps> = ({
@@ -17,6 +19,7 @@ const Editor: React.FC<EditorProps> = ({
   setSelectedText,
   fontSize,
   highlightedKanji,
+  setExplanation,
 }) => {
   const editor = useEditor({
     extensions: [
@@ -33,6 +36,29 @@ const Editor: React.FC<EditorProps> = ({
       setSelectedText(selectedText);
     },
   });
+
+  const handleKeyDown = useCallback(async (event: KeyboardEvent) => {
+    if (event.ctrlKey && event.key === 'e' && editor) {
+      event.preventDefault();
+      const selectedText = editor.state.doc.textBetween(
+        editor.state.selection.from,
+        editor.state.selection.to,
+        ' '
+      );
+      if (selectedText) {
+        setExplanation('Loading explanation...');
+        const explanation = await explainText(selectedText);
+        setExplanation(explanation);
+      }
+    }
+  }, [editor, setExplanation]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   useEffect(() => {
     if (editor && editor.getText() !== content) {
