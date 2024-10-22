@@ -96,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           AI Assist
         </button>
       </div>
-      <div className="p-6 flex-grow overflow-auto">
+      <div className="px-4 flex-grow overflow-auto">
         {activeTab === 'kanjiStats' && (
           <StatsDisplay 
             globalStats={globalStats} 

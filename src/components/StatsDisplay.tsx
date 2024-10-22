@@ -64,7 +64,6 @@ const StatsDisplay: React.FC<StatsDisplayProps> = ({
             </button>
           )}
         </div>
-        <h2 className="text-2xl font-extrabold text-gray-800">Kanji Stats</h2>
       </div>
 
       {/* Add the stat cards here */}
