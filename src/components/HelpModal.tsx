@@ -18,22 +18,32 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
           </button>
         </div>
         
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <span className="font-medium">Ctrl + /</span>
-            <span>Toggle AI Assistant</span>
+        <div className="space-y-4">
+          <div>
+            <h3 className="font-medium mb-2">Text Selection Shortcuts</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="font-medium">Ctrl+J</span>
+                <span>Search in Jisho</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Ctrl+P</span>
+                <span>Search in JPDB</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Ctrl+W</span>
+                <span>Search in WaniKani</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Ctrl+L</span>
+                <span>Ask AI</span>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium">Ctrl + Shift + K</span>
-            <span>Clear Highlighted Kanji</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="font-medium">Ctrl + .</span>
-            <span>Switch Sidebar Tab</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="font-medium">Ctrl + Shift + A</span>
-            <span>Ask AI About Selection</span>
+
+          <div className="text-sm text-gray-600">
+            <p>Note: On Mac, use Cmd instead of Ctrl</p>
+            <p>These shortcuts only work when text is selected in the editor</p>
           </div>
         </div>
 
